@@ -1,7 +1,4 @@
-from email.mime import image
-from textwrap import fill
 from tkinter import *
-from turtle import width
 from PIL import ImageTk,Image
 root = Tk()
 root.title("Test")
