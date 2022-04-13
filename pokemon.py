@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import ImageTk,Image
 
+
 #Create root screen
 root = Tk()
 root.title("Test")
@@ -22,6 +23,11 @@ title = title.resize((320,118))
 title = ImageTk.PhotoImage(title)
 title_window = canvas.create_image(320,100,anchor="nw",image=title)
 
+#Button for home screen
+homeButton = Button(root,text="Click to Start")
+canvas.create_window(450,450,anchor=NW,window=homeButton)
 
 
 root.mainloop()
+
+
