@@ -1,52 +1,10 @@
-from tkinter import *
-from PIL import ImageTk,Image
-root = Tk()
-root.title("Test")
-root.geometry("960x600")
+from tkinter import *   
 
+gui = Tk()  
+gui.geometry('200x200')  
 
-img = Image.open('background.png')
-img = img.resize((960,600))
-bg = ImageTk.PhotoImage(img)
-
-canvas = Canvas(root,width=960,height=600,)
-canvas.pack(fill="both",expand=True)
-
-canvas.create_image(0,0,image=bg, anchor=NW)
-
-canvas.create_text(480,250, text="WORDS", font=("Arial",50), fill="white")
-
-title = Image.open('pokemon.png')
-title = title.resize((320,118))
-title = ImageTk.PhotoImage(title)
-title_window = canvas.create_image(320,100,anchor="nw",image=title)
-
-button1 = Button(root,text="CLICK ME")
-button2 = Button(root,text="CLICK ME")
-button3 = Button(root,text="CLICK ME")
-
-
-button1_window = canvas.create_window(10,10, anchor="nw", window=button1)
-button2_window = canvas.create_window(80,10, anchor="nw", window=button2)
-button3_window = canvas.create_window(160,10, anchor="nw", window=button3)
-"""
-label = Label(root,image=bg)
-label.place(x=0,y=0,relwidth=1,relheight=1)
-
-text = Label(root,text="Welcome!", font=("Arial", 50), fg =("blue"))
-text.pack(pady=50)
-
-frame = Frame(root)
-frame.pack(pady=20)
-
-button = Button(frame,text="button:)")
-button.grid(row=0,column=0,padx=20)
-
-button2 = Button(frame,text="button!")
-button2.grid(row=0,column=1,padx=20)
-
-button3 = Button(frame,text="button:(")
-button3.grid(row=0,column=2,padx=20)
-"""
-
-root.mainloop()
+#set the window color
+def test():
+    gui.configure(bg='yellow') 
+test()
+gui.mainloop()
