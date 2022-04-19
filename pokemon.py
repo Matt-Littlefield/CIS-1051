@@ -1,6 +1,7 @@
+from shutil import move
 from tkinter import *
-import pyglet, tkinter
 from PIL import ImageTk,Image
+from tkinter import ttk
 
 #Function to change screen
 def homeToSelect():
@@ -10,6 +11,35 @@ def homeToSelect():
 def selectToBattle():
     canvas.delete("all")
 
+#Function to Select Moves
+def moveSelector(pokemon):
+    moveIDs = []
+    moves = []
+    move = ""
+    pokeID = 0
+    print(pokemon)
+    pokeFile = open("CIS-1051\pokemon.csv", "r")
+    pokeFile = pokeFile.readlines()[1:152]
+    for line in pokeFile:
+        line = line.split(",")
+        if line[1].capitalize() == pokemon:
+            print(":)")
+            pokeID = line[0]
+    moveFile = open("CIS-1051\pokemon_moves.csv", "r")
+    moveFile = moveFile.readlines()
+    nameFile = open("CIS-1051\move_names.csv", "r")
+    nameFile = nameFile.readlines()
+    for line in moveFile:
+        line = line.split(",")
+        if line[0] == pokeID and line[1] == "2":
+            move = line[2]
+            for row in moveFile:
+                row = row.split(",")
+                if move == row[0] and row[2] == "9":
+                    moves.append(row[2])
+    print(moves)
+
+    
 #Create root screen
 root = Tk()
 root.title("Pokemon")
@@ -46,24 +76,29 @@ def selectionScreen():
     canvas.configure(bg='gray')
     
     #big text box
-    box = Image.open('dialog box.png')
+    box = Image.open('CIS-1051\dialog box.png')
     box = box.resize((924,422))
     diaBox = ImageTk.PhotoImage(box)
     canvas.create_image(20,125,anchor=NW,image=diaBox)
 
     #Dropdowns
-    options = ['1','2','3']
-    clicked = StringVar()
-    clicked.set("Pick Your Pokemon")
-    drop1 = OptionMenu(root,clicked,*options)
+    options = []
+    pokeFile = open("CIS-1051\pokemon.csv", "r")
+    pokeFile = pokeFile.readlines()[1:152]
+    for line in pokeFile:
+        line = line.split(",")
+        options.append(line[1].capitalize())
+
+    drop1 = ttk.Combobox(root,state="readonly",value=options)
+    drop1.set("Pick Your Pokemon")
+    drop1.bind("<<ComboboxSelected>>",lambda _ : moveSelector(drop1.get()))
     canvas.create_window(100,240,anchor=NW,window=drop1)
 
-    options = ['4','5','6']
-    clicked1 = StringVar()
-    clicked1.set("Pick Opponent's Pokemon")
-    drop2 = OptionMenu(root,clicked1,*options)
+    drop2 = ttk.Combobox(root,state="readonly",value=options)
+    drop2.set("Pick Opponent's Pokemon")
     canvas.create_window(100,340,anchor=NW,window=drop2)
     
+
     #Label
     canvas.create_text(500,40,text="Pick Your Pokemon",font=("Helvetica",35))
 
