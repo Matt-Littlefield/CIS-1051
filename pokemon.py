@@ -27,16 +27,18 @@ def moveSelector(pokemon):
             pokeID = line[0]
     moveFile = open("CIS-1051\pokemon_moves.csv", "r")
     moveFile = moveFile.readlines()
-    nameFile = open("CIS-1051\move_names.csv", "r")
-    nameFile = nameFile.readlines()
+    with open("CIS-1051\move_names.csv", "r",errors='replace') as nameFile:
+        nameFile = nameFile.readlines()
     for line in moveFile:
         line = line.split(",")
         if line[0] == pokeID and line[1] == "2":
             move = line[2]
-            for row in moveFile:
+            for row in nameFile:
                 row = row.split(",")
-                if move == row[0] and row[2] == "9":
+                if move == row[0] and row[1] == "9":
                     moves.append(row[2])
+    for i in range(len(moves)):
+        moves[i] = moves[i][:-1]
     print(moves)
 
     
