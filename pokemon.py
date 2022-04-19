@@ -2,15 +2,17 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import ttk
 
-from requests import options
-
 #Function to change screen
 def homeToSelect():
     canvas.delete("all")
     selectionScreen()
 
 def selectToBattle():
+    global userPokemon,oppPokemon
+    userPokemon = drop1.get()
+    oppPokemon = drop2.get()
     canvas.delete("all")
+    battleScreen()
 #Function to Select Moves
 def moveSelector(pokemon):
     global moves
@@ -98,7 +100,7 @@ def homeScreen():
 
 #Creates selection screen
 def selectionScreen():
-    global diaBox,bg,moves
+    global diaBox,bg,moves,drop1,drop2
     #Background
     canvas.configure(bg='gray')
     
@@ -132,9 +134,31 @@ def selectionScreen():
     #Battle Button
     battleButton = Button(root,text="Battle!",command=selectToBattle)
     canvas.create_window(480,550,anchor=NW,window=battleButton)
-    
-homeScreen()
+
+#Creates battle screen
+def battleScreen():
+    global battleBG,userPokeImg
+    #Open and create background image
+    battleImg = Image.open('CIS-1051/battle background.png')
+    battleImg = battleImg.resize((960,600))
+    battleBG = ImageTk.PhotoImage(battleImg)
+    canvas.create_image(0,0,image=battleBG, anchor=NW)
+
+    #Creating pokemon images
+    pokeID = 0
+    pokeFile = open("CIS-1051\pokemon.csv","r")
+    pokeFile = pokeFile.readlines()
+    for line in pokeFile:
+        line = line.split(",")
+        if line[1].capitalize() == userPokemon:
+            pokeID = line[0]
+    userPokeImg = Image.open("CIS-1051/transparent/"+str(pokeID)+".png")
+    userPokeImg = ImageTk.PhotoImage(userPokeImg)
+    canvas.create_image(100,100,anchor=NW,image=userPokeImg)
+
+selectionScreen()
 
 root.mainloop()
 
 
+#"pokeapi\data/v2\sprites\sprites\pokemon/back/" + str(pokeID) + ".png"
