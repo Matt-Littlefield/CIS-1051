@@ -2,15 +2,15 @@
 
 #### Your name
 
-TODO
+Matt Littlefield
 
 #### Your section leader's name
 
-TODO
+Andrew Rosen/Hongzheng Wang
 
 #### Project title
 
-TODO
+Pokemon Battle Simulator
 
 ***
 
@@ -18,12 +18,12 @@ Short answers for the below questions suffice. If you want to alter your plan fo
 
 #### What have you done for your project so far?
 
-TODO
+I have created all the screens and can move between each one with buttons. You can also select your pokemon
 
 #### What have you not done for your project yet?
 
-TODO
+I have not created the actual battling yet.
 
 #### What problems, if any, have you encountered?
 
-TODO
+I had to learn tkinter to complete this project.
