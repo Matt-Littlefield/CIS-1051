@@ -12,12 +12,13 @@ def selectToBattle():
     global userMove1,userMove2,userMove3,userMove4
     userPokemon = drop1.get()
     oppPokemon = drop2.get()
-    canvas.delete("all")
-    battleScreen()
     userMove1 = moveDrop1.get()
     userMove2 = moveDrop2.get()
     userMove3 = moveDrop3.get()
     userMove4 = moveDrop4.get()
+    canvas.delete("all")
+    battleScreen()
+
 #Function to Select Moves
 def moveSelector(pokemon):
     global moves
@@ -61,23 +62,22 @@ def userMS(Pokemon):
     canvas.create_window(400,260,anchor=NW,window=moveDrop2)
     canvas.create_window(600,220,anchor=NW,window=moveDrop3)
     canvas.create_window(600,260,anchor=NW,window=moveDrop4)
-    
 
 def computerMS(Pokemon):
     global moveDrop1,moveDrop2,moveDrop3,moveDrop4
     moveSelector(Pokemon)
-    moveDrop1 = ttk.Combobox(root,state="readonly",value=moves)
-    moveDrop1.set("Pick a Move")
-    moveDrop2 = ttk.Combobox(root,state="readonly",value=moves)
-    moveDrop2.set("Pick a Move")
-    moveDrop3 = ttk.Combobox(root,state="readonly",value=moves)
-    moveDrop3.set("Pick a Move")
-    moveDrop4 = ttk.Combobox(root,state="readonly",value=moves)
-    moveDrop4.set("Pick a Move")
-    canvas.create_window(400,320,anchor=NW,window=moveDrop1)
-    canvas.create_window(400,360,anchor=NW,window=moveDrop2)
-    canvas.create_window(600,320,anchor=NW,window=moveDrop3)
-    canvas.create_window(600,360,anchor=NW,window=moveDrop4)
+    moveDrop5 = ttk.Combobox(root,state="readonly",value=moves)
+    moveDrop5.set("Pick a Move")
+    moveDrop6 = ttk.Combobox(root,state="readonly",value=moves)
+    moveDrop6.set("Pick a Move")
+    moveDrop7 = ttk.Combobox(root,state="readonly",value=moves)
+    moveDrop7.set("Pick a Move")
+    moveDrop8 = ttk.Combobox(root,state="readonly",value=moves)
+    moveDrop8.set("Pick a Move")
+    canvas.create_window(400,320,anchor=NW,window=moveDrop5)
+    canvas.create_window(400,360,anchor=NW,window=moveDrop6)
+    canvas.create_window(600,320,anchor=NW,window=moveDrop7)
+    canvas.create_window(600,360,anchor=NW,window=moveDrop8)
 
 #Create root screen
 root = Tk()
