@@ -9,10 +9,15 @@ def homeToSelect():
 
 def selectToBattle():
     global userPokemon,oppPokemon
+    global userMove1,userMove2,userMove3,userMove4
     userPokemon = drop1.get()
     oppPokemon = drop2.get()
     canvas.delete("all")
     battleScreen()
+    userMove1 = moveDrop1.get()
+    userMove2 = moveDrop2.get()
+    userMove3 = moveDrop3.get()
+    userMove4 = moveDrop4.get()
 #Function to Select Moves
 def moveSelector(pokemon):
     global moves
@@ -42,6 +47,7 @@ def moveSelector(pokemon):
         moves[i] = moves[i][:-1]
     
 def userMS(Pokemon):
+    global moveDrop1,moveDrop2,moveDrop3,moveDrop4
     moveSelector(Pokemon)
     moveDrop1 = ttk.Combobox(root,state="readonly",value=moves)
     moveDrop1.set("Pick a Move")
@@ -55,7 +61,10 @@ def userMS(Pokemon):
     canvas.create_window(400,260,anchor=NW,window=moveDrop2)
     canvas.create_window(600,220,anchor=NW,window=moveDrop3)
     canvas.create_window(600,260,anchor=NW,window=moveDrop4)
+    
+
 def computerMS(Pokemon):
+    global moveDrop1,moveDrop2,moveDrop3,moveDrop4
     moveSelector(Pokemon)
     moveDrop1 = ttk.Combobox(root,state="readonly",value=moves)
     moveDrop1.set("Pick a Move")
@@ -169,10 +178,10 @@ def battleScreen():
     borderImg = borderImg.subsample(2,3)
     canvas.create_image(0,415,anchor=NW,image=borderImg)
 
-    move1 = Button(root,text="Move 1",width=15,height=2)
-    move2 = Button(root,text="Move 2",width=15,height=2)
-    move3 = Button(root,text="Move 3",width=15,height=2)
-    move4 = Button(root,text="Move 4",width=15,height=2)
+    move1 = Button(root,text=userMove1,width=15,height=2)
+    move2 = Button(root,text=userMove2,width=15,height=2)
+    move3 = Button(root,text=userMove3,width=15,height=2)
+    move4 = Button(root,text=userMove4,width=15,height=2)
     canvas.create_window(500,460,anchor=NW,window=move1)
     canvas.create_window(640,460,anchor=NW,window=move2)
     canvas.create_window(500,510,anchor=NW,window=move3)
