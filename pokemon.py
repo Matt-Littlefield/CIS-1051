@@ -137,7 +137,8 @@ def selectionScreen():
 
 #Creates battle screen
 def battleScreen():
-    global battleBG,cpuPokeImg,userPokeImg
+    global battleBG,cpuPokeImg,userPokeImg,borderImg,oppBorderImg
+    global move1,move2,move3,move4
     #Open and create background image
     battleImg = Image.open('CIS-1051/battle background.png')
     battleImg = battleImg.resize((960,600))
@@ -150,22 +151,40 @@ def battleScreen():
     pokeFile = pokeFile.readlines()
     for line in pokeFile:
         line = line.split(",")
-        if line[1].capitalize() == userPokemon:
+        if line[1].capitalize() == oppPokemon:
             pokeID = line[0]
-    cpuPokeImg = PhotoImage(file="pokeapi\data/v2\sprites\sprites\pokemon/versions\generation-iii/ruby-sapphire/" + str(pokeID)+".png")
+    cpuPokeImg = PhotoImage(file="CIS-1051/ruby-sapphire/" + str(pokeID)+".png")
     cpuPokeImg = cpuPokeImg.zoom(3,3)
     canvas.create_image(600,385,anchor=SW,image=cpuPokeImg)
     for line in pokeFile:
         line = line.split(",")
-        if line[1].capitalize() == oppPokemon:
+        if line[1].capitalize() == userPokemon:
             pokeID = line[0]
-    userPokeImg = PhotoImage(file="pokeapi\data/v2\sprites\sprites\pokemon/versions\generation-iii/ruby-sapphire/back/" + str(pokeID)+".png")
+    userPokeImg = PhotoImage(file="CIS-1051/ruby-sapphire/back/" + str(pokeID)+".png")
     userPokeImg = userPokeImg.zoom(3,3)
-    canvas.create_image(200,585,anchor=SW,image=userPokeImg)
+    canvas.create_image(200,485,anchor=SW,image=userPokeImg)
 
     #Battle Menu
-    borderImg = PhotoImage(file="CIS-1051/battlebox.png")
-    canvas.create_image(20,20,anchor=NW,image=borderImg)
+    borderImg = PhotoImage(file="CIS-1051\moveBox.png")
+    borderImg = borderImg.subsample(2,3)
+    canvas.create_image(0,415,anchor=NW,image=borderImg)
+
+    move1 = Button(root,text="Move 1",width=15,height=2)
+    move2 = Button(root,text="Move 2",width=15,height=2)
+    move3 = Button(root,text="Move 3",width=15,height=2)
+    move4 = Button(root,text="Move 4",width=15,height=2)
+    canvas.create_window(500,460,anchor=NW,window=move1)
+    canvas.create_window(640,460,anchor=NW,window=move2)
+    canvas.create_window(500,510,anchor=NW,window=move3)
+    canvas.create_window(640,510,anchor=NW,window=move4)
+
+    canvas.create_text(180,480,text=userPokemon,font=("Helvetica",25))
+
+    oppBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+    oppBorderImg = oppBorderImg.subsample(4,4)
+    canvas.create_image(55,40,anchor=NW,image=oppBorderImg)
+
+    canvas.create_text(170,90,text=oppPokemon,font=("Helvetica",20))
 
 selectionScreen()
 
