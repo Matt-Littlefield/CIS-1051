@@ -137,7 +137,7 @@ def selectionScreen():
 
 #Creates battle screen
 def battleScreen():
-    global battleBG,userPokeImg
+    global battleBG,cpuPokeImg,userPokeImg
     #Open and create background image
     battleImg = Image.open('CIS-1051/battle background.png')
     battleImg = battleImg.resize((960,600))
@@ -152,13 +152,20 @@ def battleScreen():
         line = line.split(",")
         if line[1].capitalize() == userPokemon:
             pokeID = line[0]
-    userPokeImg = Image.open("CIS-1051/transparent/"+str(pokeID)+".png")
-    userPokeImg = ImageTk.PhotoImage(userPokeImg)
-    canvas.create_image(100,100,anchor=NW,image=userPokeImg)
-
+    cpuPokeImg = PhotoImage(file="pokeapi\data/v2\sprites\sprites\pokemon/versions\generation-iii/ruby-sapphire/" + str(pokeID)+".png")
+    cpuPokeImg = cpuPokeImg.zoom(3,3)
+    canvas.create_image(600,385,anchor=SW,image=cpuPokeImg)
+    for line in pokeFile:
+        line = line.split(",")
+        if line[1].capitalize() == oppPokemon:
+            pokeID = line[0]
+    userPokeImg = PhotoImage(file="pokeapi\data/v2\sprites\sprites\pokemon/versions\generation-iii/ruby-sapphire/back/" + str(pokeID)+".png")
+    userPokeImg = userPokeImg.zoom(3,3)
+    canvas.create_image(200,585,anchor=SW,image=userPokeImg)
 selectionScreen()
 
 root.mainloop()
 
 
 #"pokeapi\data/v2\sprites\sprites\pokemon/back/" + str(pokeID) + ".png"
+
