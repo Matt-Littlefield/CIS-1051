@@ -162,10 +162,11 @@ def battleScreen():
     userPokeImg = PhotoImage(file="pokeapi\data/v2\sprites\sprites\pokemon/versions\generation-iii/ruby-sapphire/back/" + str(pokeID)+".png")
     userPokeImg = userPokeImg.zoom(3,3)
     canvas.create_image(200,585,anchor=SW,image=userPokeImg)
+
+    #Battle Menu
+    borderImg = PhotoImage(file="CIS-1051/battlebox.png")
+    canvas.create_image(20,20,anchor=NW,image=borderImg)
+
 selectionScreen()
 
 root.mainloop()
-
-
-#"pokeapi\data/v2\sprites\sprites\pokemon/back/" + str(pokeID) + ".png"
-
