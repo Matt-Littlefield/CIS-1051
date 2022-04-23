@@ -180,7 +180,7 @@ def battleScreen():
     borderImg = borderImg.subsample(2,3)
     canvas.create_image(0,415,anchor=NW,image=borderImg)
 
-    move1 = Button(root,text=userMove1,width=15,height=2)
+    move1 = Button(root,text=userMove1,width=15,height=2,command = lambda: damageCalculator(userPokemon,userMove1))
     move2 = Button(root,text=userMove2,width=15,height=2)
     move3 = Button(root,text=userMove3,width=15,height=2)
     move4 = Button(root,text=userMove4,width=15,height=2)
@@ -198,6 +198,7 @@ def battleScreen():
 
     canvas.create_text(170,90,text=oppPokemon,font=("Helvetica",20))
     canvas.create_line(110,125,400,125,fill="green",width=5)
+
 #Damage Calculator
 def damageCalculator(pokemon,move):
     #Open files/set variables
@@ -205,6 +206,9 @@ def damageCalculator(pokemon,move):
     defType = ""
     power = ""
     id = ""
+    moveType = ""
+    type = []
+    targetType = []
     statsFile = open("CIS-1051\pokemon_stats.csv","r")
     statsFile = statsFile.readlines()
     monFile = open("CIS-1051\pokemon.csv","r")
@@ -213,16 +217,25 @@ def damageCalculator(pokemon,move):
     moveFile = moveFile.readlines()
     typeFile = open("CIS-1051\pokemon_types.csv","r")
     typeFile = typeFile.readlines()
+    typeEFile = open("CIS-1051/type_efficacy.csv","r")
+    typeEFile = typeEFile.readlines()
     id = 0
+    oppId = 0
     hp = 0
     attack = 0
     defense = 0
     spAttack = 0
     spDefense = 0
     speed = 0
+    oppHp = 0
+    oppAttack = 0
+    oppDefense = 0
+    oppSpAttack = 0
+    oppSpDefense = 0
+    oppSpeed = 0
     critical = 1
     stab = 1
-    type = []
+    eff = 1
     #Get stats/ID
     for line in monFile:
         line = line.split(",")
@@ -243,6 +256,23 @@ def damageCalculator(pokemon,move):
                         spDefense = row[2]
                     if row[1] == "6":
                         speed = row[2]
+        if line[1].capitalize() == oppPokemon:
+            oppId = line[0]
+            for row in statsFile:
+                row = row.split(",")
+                if row[0] == oppId:
+                    if row[1] == "1":
+                        oppHp = row[2]
+                    if row[1] == "2":
+                        oppattack = row[2]
+                    if row[1] == "3":
+                        oppDefense = row[2]
+                    if row[1] == "4":
+                        oppSpAttack = row[2]
+                    if row[1] == "5":
+                        oppSpDefense = row[2]
+                    if row[1] == "6":
+                        oppSpeed = row[2]
     #Get move type
     for line in moveFile:
         line = line.split(",")
@@ -251,10 +281,10 @@ def damageCalculator(pokemon,move):
                 attType = "status"
             if line[9] == "2":
                 attType = attack
-                defType = defense
+                defType = oppDefense
             if line[9] == "3":
                 attType = spAttack
-                defType = spDefense
+                defType = oppSpDefense
             power = line[4]
     #Crit
     critChance = random.uniform(0,100)
@@ -272,12 +302,31 @@ def damageCalculator(pokemon,move):
                 stab = 2
     
     #Type effectiveness
-    
-    
-    damage = (((22*power*(attType/defType))/50)+2)*critical*random*stab*eff
-    
+    for moveLine in moveFile:
+        moveLine = moveLine.split(",")
+        if move == moveLine[0].capitalize():
+            moveType = moveFile[3]
+    for monLine in monFile:
+        monLine = monLine.split(",")
+        if monLine[1].capitalize() == oppPokemon:
+            for typeLine in typeFile:
+                typeLine = typeLine.split(",")
+                if typeLine[0] == monFile[0]:
+                    targetType.append(typeFile[1])
+    for typeELine in typeEFile:
+        typeELine = typeELine.split(",")
+        if typeELine[0] == moveType and typeELine[1] in targetType:
+            eff = eff * (typeELine[2]/100)
+    print(power)
+    print(attType)
+    print(defType)
+    print(critical)
+    print(stab)
+    print(eff)
+    damage = int((((22*float(power)*float(float(attType)/float(defType)))/50)+2)*float(critical)*float(stab)*float(eff))
+    print(damage)
 
-homeScreen()
+selectionScreen()
 
 
 root.mainloop()
