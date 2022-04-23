@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import ttk
+import random
 
 #Function to change screen
 def homeToSelect():
@@ -25,7 +26,6 @@ def moveSelector(pokemon):
     moves = []
     move = ""
     pokeID = 0
-    print(pokemon)
     pokeFile = open("CIS-1051\pokemon.csv", "r")
     pokeFile = pokeFile.readlines()[1:152]
     for line in pokeFile:
@@ -110,6 +110,7 @@ def homeScreen():
 #Creates selection screen
 def selectionScreen():
     global diaBox,bg,moves,drop1,drop2
+    global pokeOptions
     #Background
     canvas.configure(bg='gray')
     
@@ -120,19 +121,20 @@ def selectionScreen():
     canvas.create_image(20,125,anchor=NW,image=diaBox)
 
     #Dropdowns
-    options = []
+    pokeOptions = []
     pokeFile = open("CIS-1051\pokemon.csv", "r")
     pokeFile = pokeFile.readlines()[1:152]
     for line in pokeFile:
         line = line.split(",")
-        options.append(line[1].capitalize())
+        if line[0] == "3" or line[0] == "6" or line[0] == "9":
+            pokeOptions.append(line[1].capitalize())
 
-    drop1 = ttk.Combobox(root,state="readonly",value=options)
+    drop1 = ttk.Combobox(root,state="readonly",value=pokeOptions)
     drop1.set("Pick Your Pokemon")
     drop1.bind("<<ComboboxSelected>>",lambda _ : userMS(drop1.get()))
     canvas.create_window(100,240,anchor=NW,window=drop1)
 
-    drop2 = ttk.Combobox(root,state="readonly",value=options)
+    drop2 = ttk.Combobox(root,state="readonly",value=pokeOptions)
     drop2.set("Pick Opponent's Pokemon")
     drop2.bind("<<ComboboxSelected>>",lambda _ : computerMS(drop2.get()))
     canvas.create_window(100,340,anchor=NW,window=drop2)
@@ -188,13 +190,94 @@ def battleScreen():
     canvas.create_window(640,510,anchor=NW,window=move4)
 
     canvas.create_text(180,480,text=userPokemon,font=("Helvetica",25))
+    canvas.create_line(115,515,475,515,fill="green",width=5)
 
     oppBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
     oppBorderImg = oppBorderImg.subsample(4,4)
     canvas.create_image(55,40,anchor=NW,image=oppBorderImg)
 
     canvas.create_text(170,90,text=oppPokemon,font=("Helvetica",20))
+    canvas.create_line(110,125,400,125,fill="green",width=5)
+#Damage Calculator
+def damageCalculator(pokemon,move):
+    #Open files/set variables
+    attType = ""
+    defType = ""
+    power = ""
+    id = ""
+    statsFile = open("CIS-1051\pokemon_stats.csv","r")
+    statsFile = statsFile.readlines()
+    monFile = open("CIS-1051\pokemon.csv","r")
+    monFile = monFile.readlines()
+    moveFile = open("CIS-1051\moves.csv","r")
+    moveFile = moveFile.readlines()
+    typeFile = open("CIS-1051\pokemon_types.csv","r")
+    typeFile = typeFile.readlines()
+    id = 0
+    hp = 0
+    attack = 0
+    defense = 0
+    spAttack = 0
+    spDefense = 0
+    speed = 0
+    critical = 1
+    stab = 1
+    type = []
+    #Get stats/ID
+    for line in monFile:
+        line = line.split(",")
+        if line[1].capitalize() == pokemon:
+            id = line[0]
+            for row in statsFile:
+                row = row.split(",")
+                if row[0] == id:
+                    if row[1] == "1":
+                        hp = row[2]
+                    if row[1] == "2":
+                        attack = row[2]
+                    if row[1] == "3":
+                        defense = row[2]
+                    if row[1] == "4":
+                        spAttack = row[2]
+                    if row[1] == "5":
+                        spDefense = row[2]
+                    if row[1] == "6":
+                        speed = row[2]
+    #Get move type
+    for line in moveFile:
+        line = line.split(",")
+        if line[1].capitalize() == move:
+            if line[9] == "1":
+                attType = "status"
+            if line[9] == "2":
+                attType = attack
+                defType = defense
+            if line[9] == "3":
+                attType = spAttack
+                defType = spDefense
+            power = line[4]
+    #Crit
+    critChance = random.uniform(0,100)
+    if critChance < 6.25:
+        critical = 2
+    #STAB
+    for line in typeFile:
+        line = line.split(",")
+        if line[0] == id:
+            type.append(line[1])
+    for line in moveFile:
+        line = line.split(",")
+        if line[0] == id:
+            if line[3] in type:
+                stab = 2
+    
+    #Type effectiveness
+    
+    
+    damage = (((22*power*(attType/defType))/50)+2)*critical*random*stab*eff
+    
 
-selectionScreen()
+homeScreen()
+
 
 root.mainloop()
