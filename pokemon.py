@@ -10,14 +10,18 @@ def homeToSelect():
 
 def selectToBattle():
     global userPokemon,oppPokemon
-    global userMove1,userMove2,userMove3,userMove4
+    global userMove1,userMove2,userMove3,userMove4,oppMoves
+    global checkUser,checkOpp
     userPokemon = drop1.get()
     oppPokemon = drop2.get()
     userMove1 = moveDrop1.get()
     userMove2 = moveDrop2.get()
     userMove3 = moveDrop3.get()
     userMove4 = moveDrop4.get()
+    oppMoves = [moveDrop5.get(),moveDrop6.get(),moveDrop7.get(),moveDrop8.get()]
     canvas.delete("all")
+    checkUser = True
+    checkOpp = True
     battleScreen()
 
 #Function to Select Moves
@@ -66,7 +70,7 @@ def userMS(Pokemon):
     canvas.create_window(600,260,anchor=NW,window=moveDrop4)
 
 def computerMS(Pokemon):
-    global moveDrop1,moveDrop2,moveDrop3,moveDrop4
+    global moveDrop5,moveDrop6,moveDrop7,moveDrop8
     moveSelector(Pokemon)
     moveDrop5 = ttk.Combobox(root,state="readonly",value=moves)
     moveDrop5.set("Pick a Move")
@@ -182,40 +186,61 @@ def battleScreen():
     borderImg = borderImg.subsample(2,3)
     canvas.create_image(0,415,anchor=NW,image=borderImg)
 
-    move1 = Button(root,text=userMove1,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove1))
-    move2 = Button(root,text=userMove2,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove2))
-    move3 = Button(root,text=userMove3,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove3))
-    move4 = Button(root,text=userMove4,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove4))
+    move1 = Button(root,text=userMove1,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove1,"opp"))
+    move2 = Button(root,text=userMove2,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove2,"opp"))
+    move3 = Button(root,text=userMove3,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove3,"opp"))
+    move4 = Button(root,text=userMove4,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove4,"opp"))
     canvas.create_window(500,460,anchor=NW,window=move1)
     canvas.create_window(640,460,anchor=NW,window=move2)
     canvas.create_window(500,510,anchor=NW,window=move3)
     canvas.create_window(640,510,anchor=NW,window=move4)
 
     canvas.create_text(180,480,text=userPokemon,font=("Helvetica",25))
-    canvas.create_line(115,515,475,515,fill="green",width=5)
+    canvas.create_line(115,515,475,515,fill="green",width=5,tags="userLine")
 
     oppBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
     oppBorderImg = oppBorderImg.subsample(4,4)
     canvas.create_image(55,40,anchor=NW,image=oppBorderImg)
 
     canvas.create_text(170,90,text=oppPokemon,font=("Helvetica",20))
-    canvas.create_line(110,125,400,125,fill="green",width=5)
+    canvas.create_line(110,125,400,125,fill="green",width=5,tags="oppLine")
 
 #Screen Updater
-def battleScreenUpdater(pokemon,move):
-    hpBarUpdater(damageCalculator(pokemon,move))
-
+def battleScreenUpdater(pokemon,move,player):
+    global userSpeed,oppSpeed
+    damageList = []
+    oppMove = random.randint(0,3)
+    oppMove = oppMoves[oppMove]
+    damageList = damageCalculator(pokemon,move,oppMove)
+    damage = damageList[0]
+    oppDamage = damageList[1]
+    if userSpeed > oppSpeed:
+        #User Move
+        hpBarUpdater(damage,player)
+        #Opp Move
+        hpBarUpdater(oppDamage,"user")
+    elif oppSpeed > userSpeed:
+        #Opp Move
+        hpBarUpdater(oppDamage,"user")
+        #User Move
+        hpBarUpdater(damage,player)
 
 #Damage Calculator
-def damageCalculator(pokemon,move):
+def damageCalculator(pokemon,move,oppMove):
+    global hp,oppHp,userSpeed,oppSpeed
     #Open files/set variables
     attType = ""
     defType = ""
     power = ""
-    id = ""
     moveType = ""
     type = []
     targetType = []
+    oppAttType = ""
+    oppDefType = ""
+    oppPower = ""
+    oppMoveType = ""
+    oppType = []
+    oppTargetType = []
     statsFile = open("CIS-1051\pokemon_stats.csv","r")
     statsFile = statsFile.readlines()
     monFile = open("CIS-1051\pokemon.csv","r")
@@ -233,7 +258,7 @@ def damageCalculator(pokemon,move):
     defense = 0
     spAttack = 0
     spDefense = 0
-    speed = 0
+    userSpeed = 0
     oppHp = 0
     oppAttack = 0
     oppDefense = 0
@@ -243,6 +268,9 @@ def damageCalculator(pokemon,move):
     critical = 1
     stab = 1
     eff = 1
+    oppCritical = 1
+    oppStab = 1
+    oppEff = 1
     #Get stats/ID
     for line in monFile:
         line = line.split(",")
@@ -262,7 +290,7 @@ def damageCalculator(pokemon,move):
                     if row[1] == "5":
                         spDefense = row[2]
                     if row[1] == "6":
-                        speed = row[2]
+                        userSpeed = row[2]
         if line[1].capitalize() == oppPokemon:
             oppId = line[0]
             for row in statsFile:
@@ -271,7 +299,7 @@ def damageCalculator(pokemon,move):
                     if row[1] == "1":
                         oppHp = row[2]
                     if row[1] == "2":
-                        oppattack = row[2]
+                        oppAttack = row[2]
                     if row[1] == "3":
                         oppDefense = row[2]
                     if row[1] == "4":
@@ -280,6 +308,7 @@ def damageCalculator(pokemon,move):
                         oppSpDefense = row[2]
                     if row[1] == "6":
                         oppSpeed = row[2]
+    ##User
     #Get move type
     for line in moveFile:
         line.replace("-"," ")
@@ -307,7 +336,7 @@ def damageCalculator(pokemon,move):
         line = line.split(",")
         if line[1] == move.lower():
             if line[3] in type:
-                stab = 2
+                stab = 1.5
     
     #Type effectiveness
     for moveLine in moveFile:
@@ -325,19 +354,102 @@ def damageCalculator(pokemon,move):
         typeELine = typeELine.split(",")
         if typeELine[0] == moveType and typeELine[1] in targetType:
             eff = eff * float(int(typeELine[2])/100)
-    print(power)
-    print(attType)
-    print(defType)
-    print(critical)
-    print(stab)
-    print(eff)
+
+    ##Opp
+    #Get move type
+    for line in moveFile:
+        line.replace("-"," ")
+        line = line.split(",")
+        if line[1] == oppMove.lower():
+            if line[9] == "1":
+                oppAttType = "status"
+            if line[9] == "2":
+                oppAttType = oppAttack
+                oppDefType = defense
+            if line[9] == "3":
+                oppAttType = oppSpAttack
+                oppDefType = spDefense
+            oppPower = line[4]
+    #Crit
+    oppCritChance = random.uniform(0,100)
+    if oppCritChance < 6.25:
+        oppCritical = 2
+    #STAB
+    for line in typeFile:
+        line = line.split(",")
+        if line[0] == oppId:
+            oppType.append(line[1])
+    for line in moveFile:
+        line = line.split(",")
+        if line[1] == oppMove.lower():
+            if line[3] in oppType:
+                oppStab = 1.5
+    
+    #Type effectiveness
+    for moveLine in moveFile:
+        moveLine = moveLine.split(",")
+        if oppMove.lower() == moveLine[1]:
+            oppMoveType = moveLine[3]
+    for monLine in monFile:
+        monLine = monLine.split(",")
+        if monLine[1].capitalize() == pokemon:
+            for typeLine in typeFile:
+                typeLine = typeLine.split(",")
+                if typeLine[0] == monLine[0]:
+                    oppTargetType.append(typeLine[1])
+    for typeELine in typeEFile:
+        typeELine = typeELine.split(",")
+        if typeELine[0] == oppMoveType and typeELine[1] in oppTargetType:
+            oppEff = oppEff * float(int(typeELine[2])/100)
+
+
     damage = int((((22*float(power)*float(float(attType)/float(defType)))/50)+2)*float(critical)*float(stab)*float(eff))
-    print(damage)
-    return damage
+    oppDamage = int((((22*float(oppPower)*float(float(oppAttType)/float(oppDefType)))/50)+2)*float(oppCritical)*float(oppStab)*float(oppEff))
+    return [damage,oppDamage]
 
 #HP Bar Updater
-def hpBarUpdater(damage):
-    var = 1
+def hpBarUpdater(damage,player):
+    global hp,changedHp,checkUser,oppHp,changedOppHp,checkOpp
+    percentage = 0
+    oppPercentage = 0
+    color = ""
+    oppColor = ""
+    hpBar = 0
+    oppHpBar = 0
+    if player.lower() == "user":
+        if checkUser:
+            changedHp = hp
+            checkUser = False
+        changedHp = int(changedHp) - damage
+        percentage = float(int(changedHp)/int(hp))
+        hpBar = percentage * 360
+        canvas.delete("userLine")
+        if hpBar > 0:
+            if percentage > 0.5:
+                color = "green"
+            elif percentage > 0.2:
+                color = "yellow"
+            elif percentage > 0:
+                color = "red"
+            canvas.create_line(115,515,115+hpBar,515,fill=color,width=5,tags="userLine")
+    if player.lower() == "opp":
+        if checkOpp:
+            changedOppHp = oppHp
+            checkOpp = False
+        changedOppHp = int(changedOppHp) - damage
+        oppPercentage = float(int(changedOppHp)/int(oppHp))
+        oppHpBar = oppPercentage * 290
+        canvas.delete("oppLine")
+        if oppHpBar > 0:
+            if oppPercentage > 0.5:
+                oppColor = "green"
+            elif oppPercentage > 0.2:
+                oppColor = "yellow"
+            elif oppPercentage > 0:
+                oppColor = "red"
+            canvas.create_line(110,125,110+oppHpBar,125,fill=oppColor,width=5,tags="oppLine")
+        
+
 
 selectionScreen()
 
