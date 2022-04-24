@@ -38,14 +38,16 @@ def moveSelector(pokemon):
         nameFile = nameFile.readlines()
     for line in moveFile:
         line = line.split(",")
-        if line[0] == pokeID and line[1] == "2":
+        if line[0] == pokeID and line[1] == "2" and line[3] == "1":
             move = line[2]
             for row in nameFile:
+                row = row.replace(" ","-")
                 row = row.split(",")
-                if move == row[0] and row[1] == "9":
+                if move == row[0] and row[1] == "9" and row[2] not in moves:
                     moves.append(row[2])
     for i in range(len(moves)):
         moves[i] = moves[i][:-1]
+    #moves = ["Ember","Growl","Scratch"]
     
 def userMS(Pokemon):
     global moveDrop1,moveDrop2,moveDrop3,moveDrop4
@@ -126,7 +128,7 @@ def selectionScreen():
     pokeFile = pokeFile.readlines()[1:152]
     for line in pokeFile:
         line = line.split(",")
-        if line[0] == "3" or line[0] == "6" or line[0] == "9":
+        if (line[0] == "3" or line[0] == "6" or line[0] == "9"):
             pokeOptions.append(line[1].capitalize())
 
     drop1 = ttk.Combobox(root,state="readonly",value=pokeOptions)
@@ -180,10 +182,10 @@ def battleScreen():
     borderImg = borderImg.subsample(2,3)
     canvas.create_image(0,415,anchor=NW,image=borderImg)
 
-    move1 = Button(root,text=userMove1,width=15,height=2,command = lambda: damageCalculator(userPokemon,userMove1))
-    move2 = Button(root,text=userMove2,width=15,height=2)
-    move3 = Button(root,text=userMove3,width=15,height=2)
-    move4 = Button(root,text=userMove4,width=15,height=2)
+    move1 = Button(root,text=userMove1,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove1))
+    move2 = Button(root,text=userMove2,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove2))
+    move3 = Button(root,text=userMove3,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove3))
+    move4 = Button(root,text=userMove4,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove4))
     canvas.create_window(500,460,anchor=NW,window=move1)
     canvas.create_window(640,460,anchor=NW,window=move2)
     canvas.create_window(500,510,anchor=NW,window=move3)
@@ -198,6 +200,11 @@ def battleScreen():
 
     canvas.create_text(170,90,text=oppPokemon,font=("Helvetica",20))
     canvas.create_line(110,125,400,125,fill="green",width=5)
+
+#Screen Updater
+def battleScreenUpdater(pokemon,move):
+    hpBarUpdater(damageCalculator(pokemon,move))
+
 
 #Damage Calculator
 def damageCalculator(pokemon,move):
@@ -275,8 +282,9 @@ def damageCalculator(pokemon,move):
                         oppSpeed = row[2]
     #Get move type
     for line in moveFile:
+        line.replace("-"," ")
         line = line.split(",")
-        if line[1].capitalize() == move:
+        if line[1] == move.lower():
             if line[9] == "1":
                 attType = "status"
             if line[9] == "2":
@@ -297,26 +305,26 @@ def damageCalculator(pokemon,move):
             type.append(line[1])
     for line in moveFile:
         line = line.split(",")
-        if line[0] == id:
+        if line[1] == move.lower():
             if line[3] in type:
                 stab = 2
     
     #Type effectiveness
     for moveLine in moveFile:
         moveLine = moveLine.split(",")
-        if move == moveLine[0].capitalize():
-            moveType = moveFile[3]
+        if move.lower() == moveLine[1]:
+            moveType = moveLine[3]
     for monLine in monFile:
         monLine = monLine.split(",")
         if monLine[1].capitalize() == oppPokemon:
             for typeLine in typeFile:
                 typeLine = typeLine.split(",")
-                if typeLine[0] == monFile[0]:
-                    targetType.append(typeFile[1])
+                if typeLine[0] == monLine[0]:
+                    targetType.append(typeLine[1])
     for typeELine in typeEFile:
         typeELine = typeELine.split(",")
         if typeELine[0] == moveType and typeELine[1] in targetType:
-            eff = eff * (typeELine[2]/100)
+            eff = eff * float(int(typeELine[2])/100)
     print(power)
     print(attType)
     print(defType)
@@ -325,6 +333,11 @@ def damageCalculator(pokemon,move):
     print(eff)
     damage = int((((22*float(power)*float(float(attType)/float(defType)))/50)+2)*float(critical)*float(stab)*float(eff))
     print(damage)
+    return damage
+
+#HP Bar Updater
+def hpBarUpdater(damage):
+    var = 1
 
 selectionScreen()
 

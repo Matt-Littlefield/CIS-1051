@@ -6,7 +6,7 @@ list = []
 count = 0
 for line in file2:
     line = line.split(",")
-    if (line[0] == "3" or line[0] == "6" or line[0] == "9") and line[1] == "1":
+    if (line[0] == "3" or line[0] == "6" or line[0] == "9") and line[1] == "1" and line[3] == "1":
         for row in file:
             row = row.split(",")
             if row[0] == line[2]:
