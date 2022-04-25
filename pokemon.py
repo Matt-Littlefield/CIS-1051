@@ -2,6 +2,8 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import ttk
 import random
+import time
+import sys
 
 #Function to change screen
 def homeToSelect():
@@ -184,7 +186,7 @@ def battleScreen():
     #Battle Menu
     borderImg = PhotoImage(file="CIS-1051\moveBox.png")
     borderImg = borderImg.subsample(2,3)
-    canvas.create_image(0,415,anchor=NW,image=borderImg)
+    canvas.create_image(0,415,anchor=NW,image=borderImg,tags="borderImg")
 
     move1 = Button(root,text=userMove1,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove1,"opp"))
     move2 = Button(root,text=userMove2,width=15,height=2,command = lambda: battleScreenUpdater(userPokemon,userMove2,"opp"))
@@ -208,18 +210,43 @@ def battleScreen():
 #Screen Updater
 def battleScreenUpdater(pokemon,move,player):
     global userSpeed,oppSpeed
+    global textBorderImg
+    randomOrder = random.randint(0,1)
     damageList = []
     oppMove = random.randint(0,3)
     oppMove = oppMoves[oppMove]
     damageList = damageCalculator(pokemon,move,oppMove)
     damage = damageList[0]
     oppDamage = damageList[1]
-    if userSpeed > oppSpeed:
+    if int(userSpeed) > int(oppSpeed):
         #User Move
         hpBarUpdater(damage,player)
+        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = textBorderImg.subsample(5,5)
+        canvas.create_image(500,50,anchor=NW,image=textBorderImg)
+        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
         #Opp Move
         hpBarUpdater(oppDamage,"user")
-    elif oppSpeed > userSpeed:
+        hpBarUpdater(damage,player)
+        #textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        #textBorderImg = textBorderImg.subsample(5,5)
+        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+
+    elif int(oppSpeed) > int(userSpeed):
+        #Opp Move
+        hpBarUpdater(oppDamage,"user")
+        #User Move
+        hpBarUpdater(damage,player)
+    elif randomOrder == 0:
+        #User Move
+        hpBarUpdater(damage,player)
+        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = textBorderImg.subsample(2,3)
+        canvas.create_image(0,415,anchor=NW,image=textBorderImg)
+        canvas.create_text(180,480,text="test textttttttt",font=("Helvetica",25))
+        #Opp Move
+        hpBarUpdater(oppDamage,"user")
+    elif randomOrder == 1:
         #Opp Move
         hpBarUpdater(oppDamage,"user")
         #User Move
@@ -280,7 +307,7 @@ def damageCalculator(pokemon,move,oppMove):
                 row = row.split(",")
                 if row[0] == id:
                     if row[1] == "1":
-                        hp = row[2]
+                        hp = int(row[2]) + 60
                     if row[1] == "2":
                         attack = row[2]
                     if row[1] == "3":
@@ -297,7 +324,7 @@ def damageCalculator(pokemon,move,oppMove):
                 row = row.split(",")
                 if row[0] == oppId:
                     if row[1] == "1":
-                        oppHp = row[2]
+                        oppHp = int(row[2]) + 60
                     if row[1] == "2":
                         oppAttack = row[2]
                     if row[1] == "3":
