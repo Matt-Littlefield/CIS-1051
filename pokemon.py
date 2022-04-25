@@ -2,8 +2,6 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import ttk
 import random
-import time
-import sys
 
 #Function to change screen
 def homeToSelect():
@@ -14,6 +12,7 @@ def selectToBattle():
     global userPokemon,oppPokemon
     global userMove1,userMove2,userMove3,userMove4,oppMoves
     global checkUser,checkOpp
+    global win,loss
     userPokemon = drop1.get()
     oppPokemon = drop2.get()
     userMove1 = moveDrop1.get()
@@ -24,6 +23,8 @@ def selectToBattle():
     canvas.delete("all")
     checkUser = True
     checkOpp = True
+    win = False
+    loss = False
     battleScreen()
 
 #Function to Select Moves
@@ -207,10 +208,20 @@ def battleScreen():
     canvas.create_text(170,90,text=oppPokemon,font=("Helvetica",20))
     canvas.create_line(110,125,400,125,fill="green",width=5,tags="oppLine")
 
+#Creates the win screen
+def winScreen(winner):
+    if winner:
+        canvas.delete("all")
+        canvas.create_text(480,240,text="Congratulations, You Win!",font=("Helvetica",40))
+    else:
+        canvas.delete("all")
+        canvas.create_text(480,240,text="Better Luck Next Time...",font=("Helvetica",40))
+
 #Screen Updater
 def battleScreenUpdater(pokemon,move,player):
     global userSpeed,oppSpeed
     global textBorderImg
+    global percentage,oppPercentage
     randomOrder = random.randint(0,1)
     damageList = []
     oppMove = random.randint(0,3)
@@ -225,33 +236,55 @@ def battleScreenUpdater(pokemon,move,player):
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
         canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        winCondition()
         #Opp Move
         hpBarUpdater(oppDamage,"user")
         hpBarUpdater(damage,player)
-        #textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
-        #textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        winCondition()
 
     elif int(oppSpeed) > int(userSpeed):
         #Opp Move
         hpBarUpdater(oppDamage,"user")
+        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = textBorderImg.subsample(5,5)
+        canvas.create_image(500,50,anchor=NW,image=textBorderImg)
+        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        winCondition()
         #User Move
         hpBarUpdater(damage,player)
+        hpBarUpdater(oppDamage,"user")
+        hpBarUpdater(damage,player)
+        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        winCondition()
     elif randomOrder == 0:
         #User Move
         hpBarUpdater(damage,player)
         textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
-        textBorderImg = textBorderImg.subsample(2,3)
-        canvas.create_image(0,415,anchor=NW,image=textBorderImg)
-        canvas.create_text(180,480,text="test textttttttt",font=("Helvetica",25))
+        textBorderImg = textBorderImg.subsample(5,5)
+        canvas.create_image(500,50,anchor=NW,image=textBorderImg)
+        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        winCondition()
         #Opp Move
         hpBarUpdater(oppDamage,"user")
+        hpBarUpdater(damage,player)
+        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        winCondition()
     elif randomOrder == 1:
         #Opp Move
         hpBarUpdater(oppDamage,"user")
+        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = textBorderImg.subsample(5,5)
+        canvas.create_image(500,50,anchor=NW,image=textBorderImg)
+        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        winCondition()
         #User Move
         hpBarUpdater(damage,player)
-
+        hpBarUpdater(oppDamage,"user")
+        hpBarUpdater(damage,player)
+        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        winCondition()
+    
 #Damage Calculator
 def damageCalculator(pokemon,move,oppMove):
     global hp,oppHp,userSpeed,oppSpeed
@@ -437,6 +470,7 @@ def damageCalculator(pokemon,move,oppMove):
 #HP Bar Updater
 def hpBarUpdater(damage,player):
     global hp,changedHp,checkUser,oppHp,changedOppHp,checkOpp
+    global win,loss
     percentage = 0
     oppPercentage = 0
     color = ""
@@ -459,6 +493,10 @@ def hpBarUpdater(damage,player):
             elif percentage > 0:
                 color = "red"
             canvas.create_line(115,515,115+hpBar,515,fill=color,width=5,tags="userLine")
+        else:
+            print("helllooooo")
+            loss = True
+            
     if player.lower() == "opp":
         if checkOpp:
             changedOppHp = oppHp
@@ -475,10 +513,20 @@ def hpBarUpdater(damage,player):
             elif oppPercentage > 0:
                 oppColor = "red"
             canvas.create_line(110,125,110+oppHpBar,125,fill=oppColor,width=5,tags="oppLine")
+        else:
+            print("heyyyy")
+            win = True
+            
         
+#Win condition function
+def winCondition():
+    global win,loss
+    if win:
+        winScreen(True)
+    if loss:
+        winScreen(False)
 
-
-selectionScreen()
+homeScreen()
 
 
 root.mainloop()
