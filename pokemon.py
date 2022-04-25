@@ -27,6 +27,9 @@ def selectToBattle():
     loss = False
     battleScreen()
 
+def winToHome():
+    canvas.delete("all")
+    homeScreen()
 #Function to Select Moves
 def moveSelector(pokemon):
     global moves
@@ -210,12 +213,23 @@ def battleScreen():
 
 #Creates the win screen
 def winScreen(winner):
+    global bg
     if winner:
         canvas.delete("all")
+        img = Image.open('CIS-1051/background.png')
+        img = img.resize((960,600))
+        bg = ImageTk.PhotoImage(img)
+        canvas.create_image(0,0,image=bg, anchor=NW)
         canvas.create_text(480,240,text="Congratulations, You Win!",font=("Helvetica",40))
     else:
         canvas.delete("all")
+        img = Image.open('CIS-1051/background.png')
+        img = img.resize((960,600))
+        bg = ImageTk.PhotoImage(img)
+        canvas.create_image(0,0,image=bg, anchor=NW)
         canvas.create_text(480,240,text="Better Luck Next Time...",font=("Helvetica",40))
+    backToHomeButton = Button(root,text="Back to Title Screen",width=15,height=3,command=lambda: winToHome())
+    canvas.create_window(440,350,anchor=NW,window=backToHomeButton)
 
 #Screen Updater
 def battleScreenUpdater(pokemon,move,player):
@@ -516,8 +530,7 @@ def hpBarUpdater(damage,player):
         else:
             print("heyyyy")
             win = True
-            
-        
+                    
 #Win condition function
 def winCondition():
     global win,loss
