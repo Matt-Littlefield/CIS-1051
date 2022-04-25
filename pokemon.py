@@ -12,7 +12,7 @@ def selectToBattle():
     global userPokemon,oppPokemon
     global userMove1,userMove2,userMove3,userMove4,oppMoves
     global checkUser,checkOpp
-    global win,loss
+    global win,loss,turn
     userPokemon = drop1.get()
     oppPokemon = drop2.get()
     userMove1 = moveDrop1.get()
@@ -25,6 +25,7 @@ def selectToBattle():
     checkOpp = True
     win = False
     loss = False
+    turn = 0
     battleScreen()
 
 def winToHome():
@@ -53,11 +54,10 @@ def moveSelector(pokemon):
             for row in nameFile:
                 row = row.replace(" ","-")
                 row = row.split(",")
-                if move == row[0] and row[1] == "9" and row[2] not in moves:
+                if move == row[0] and row[1] == "9" and row[2] not in moves and row[0] != "73":
                     moves.append(row[2])
     for i in range(len(moves)):
         moves[i] = moves[i][:-1]
-    #moves = ["Ember","Growl","Scratch"]
     
 def userMS(Pokemon):
     global moveDrop1,moveDrop2,moveDrop3,moveDrop4
@@ -235,7 +235,6 @@ def winScreen(winner):
 def battleScreenUpdater(pokemon,move,player):
     global userSpeed,oppSpeed
     global textBorderImg
-    global percentage,oppPercentage
     randomOrder = random.randint(0,1)
     damageList = []
     oppMove = random.randint(0,3)
@@ -249,27 +248,35 @@ def battleScreenUpdater(pokemon,move,player):
         textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
-        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        if sleep:
+            canvas.create_text(670,90,text= pokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
         winCondition()
         #Opp Move
         hpBarUpdater(oppDamage,"user")
-        hpBarUpdater(damage,player)
-        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        if oppSleep:
+            canvas.create_text(670,120,text= oppPokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
         winCondition()
-
     elif int(oppSpeed) > int(userSpeed):
         #Opp Move
         hpBarUpdater(oppDamage,"user")
         textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
-        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        if oppSleep:
+            canvas.create_text(670,90,text= oppPokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,90,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
         winCondition()
         #User Move
         hpBarUpdater(damage,player)
-        hpBarUpdater(oppDamage,"user")
-        hpBarUpdater(damage,player)
-        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        if sleep:
+            canvas.create_text(670,120,text= pokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,120,text= pokemon + " used " + move + "!",font=("Helvetica",15))
         winCondition()
     elif randomOrder == 0:
         #User Move
@@ -277,12 +284,17 @@ def battleScreenUpdater(pokemon,move,player):
         textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
-        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        if sleep:
+            canvas.create_text(670,90,text= pokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
         winCondition()
         #Opp Move
         hpBarUpdater(oppDamage,"user")
-        hpBarUpdater(damage,player)
-        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        if oppSleep:
+            canvas.create_text(670,120,text= oppPokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
         winCondition()
     elif randomOrder == 1:
         #Opp Move
@@ -290,19 +302,35 @@ def battleScreenUpdater(pokemon,move,player):
         textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
-        canvas.create_text(670,90,text= pokemon + " used " + move + "!",font=("Helvetica",15))
+        if oppSleep:
+            canvas.create_text(670,90,text= oppPokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,90,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
         winCondition()
         #User Move
         hpBarUpdater(damage,player)
-        hpBarUpdater(oppDamage,"user")
-        hpBarUpdater(damage,player)
-        canvas.create_text(670,120,text= oppPokemon + " used " + oppMove + "!",font=("Helvetica",15))
+        if sleep:
+            canvas.create_text(670,120,text= pokemon + " is asleep!",font=("Helvetica",15))
+        else:
+            canvas.create_text(670,120,text= pokemon + " used " + move + "!",font=("Helvetica",15))
         winCondition()
     
 #Damage Calculator
 def damageCalculator(pokemon,move,oppMove):
     global hp,oppHp,userSpeed,oppSpeed
+    global sleep,oppSleep,sleepTurn,oppSleepTurn,wakeTurn,oppWakeTurn
+    global turn
+    global poison,oppPoison
     #Open files/set variables
+    status = False
+    oppStatus = False
+    check = True
+    oppCheck = True
+    if turn == 0:
+        sleep = False
+        oppSleep = False
+        poison = 0
+        oppPoison = 0
     attType = ""
     defType = ""
     power = ""
@@ -345,6 +373,17 @@ def damageCalculator(pokemon,move,oppMove):
     oppCritical = 1
     oppStab = 1
     oppEff = 1
+    attStage = 1
+    defStage = 1
+    spAttStage = 1
+    spDefStage = 1
+    speedStage = 1
+    oppAttStage = 1
+    oppDefStage = 1
+    oppSpAttStage = 1
+    oppSpDefStage = 1
+    oppSpeedStage = 1
+
     #Get stats/ID
     for line in monFile:
         line = line.split(",")
@@ -397,6 +436,33 @@ def damageCalculator(pokemon,move,oppMove):
                 attType = spAttack
                 defType = oppSpDefense
             power = line[4]
+    #Status
+    if attType == "status":
+        if sleep:
+            if sleepTurn == wakeTurn:
+                sleep = False
+            else:
+                damage = 0 + oppPoison
+                sleepTurn += 1
+                check = False
+        status = True
+        if move == "Growl" and check:
+            attack = statDecreaser(attack,attStage,pokemon,"2")
+        if move == "Growth" and check:
+            attack = statIncreaser(attack,attStage,pokemon,"2")
+            spAttack = statIncreaser(spAttack,spAttStage,pokemon,"4")
+        if move == "Leer" and check:
+            defense = statDecreaser(defense,defStage,pokemon,"3")
+        if move == "Tail-Whip" and check:
+            defense = statDecreaser(defense,defStage,pokemon,"3")
+        if move == "Withdraw" and check:
+            defense = statIncreaser(defense,defStage,pokemon,"3")
+        if move == "Sleep-Powder" and check:
+            oppSleep = True
+            oppWakeTurn = random.randint(1,3)
+            oppSleepTurn = 0
+        if move == "Poison-Powder" and check:
+            oppPoison = oppHp * (1/8)
     #Crit
     critChance = random.uniform(0,100)
     if critChance < 6.25:
@@ -444,6 +510,33 @@ def damageCalculator(pokemon,move,oppMove):
                 oppAttType = oppSpAttack
                 oppDefType = spDefense
             oppPower = line[4]
+    #Status
+    if oppAttType == "status":
+        if oppSleep:
+            if oppSleepTurn == oppWakeTurn:
+                oppSleep = False
+            else:
+                oppDamage = 0 + poison
+                oppSleepTurn += 1
+                oppCheck = False
+        oppStatus = True
+        if oppMove == "Growl" and oppCheck:
+            oppAttack = statDecreaser(oppAttack,oppAttStage,oppPokemon,"2")
+        if oppMove == "Growth" and oppCheck:
+            oppAttack = statIncreaser(oppAttack,oppAttStage,oppPokemon,"2")
+            oppSpAttack = statIncreaser(oppSpAttack,oppSpAttStage,oppPokemon,"4")
+        if oppMove == "Leer" and oppCheck:
+            oppDefense = statDecreaser(oppDefense,oppDefStage,oppPokemon,"3")
+        if oppMove == "Tail-Whip" and oppCheck:
+            oppDefense = statDecreaser(oppDefense,oppDefStage,oppPokemon,"3")
+        if oppMove == "Withdraw" and oppCheck:
+            oppDefense = statIncreaser(oppDefense,oppDefStage,oppPokemon,"3")
+        if oppMove == "Sleep-Powder" and oppCheck:
+            sleep = True
+            wakeTurn = random.randint(1,3)
+            sleepTurn = 0
+        if oppMove == "Poison-Powder" and oppCheck:
+            poison = hp * (1/8)
     #Crit
     oppCritChance = random.uniform(0,100)
     if oppCritChance < 6.25:
@@ -476,9 +569,31 @@ def damageCalculator(pokemon,move,oppMove):
         if typeELine[0] == oppMoveType and typeELine[1] in oppTargetType:
             oppEff = oppEff * float(int(typeELine[2])/100)
 
-
-    damage = int((((22*float(power)*float(float(attType)/float(defType)))/50)+2)*float(critical)*float(stab)*float(eff))
-    oppDamage = int((((22*float(oppPower)*float(float(oppAttType)/float(oppDefType)))/50)+2)*float(oppCritical)*float(oppStab)*float(oppEff))
+    if status:
+        damage = 0 + oppPoison
+    else:
+        if sleep:
+            if sleepTurn == wakeTurn:
+                damage = int((((22*float(power)*float(float(attType)/float(defType)))/50)+2)*float(critical)*float(stab)*float(eff)+oppPoison)
+                sleep = False
+            else:
+                damage = 0 + oppPoison
+                sleepTurn += 1
+        else:
+            damage = int((((22*float(power)*float(float(attType)/float(defType)))/50)+2)*float(critical)*float(stab)*float(eff)+oppPoison)
+    if oppStatus:
+        oppDamage = 0 + poison
+    else:
+        if oppSleep:
+            if oppSleepTurn == oppWakeTurn:
+                oppDamage = int((((22*float(oppPower)*float(float(oppAttType)/float(oppDefType)))/50)+2)*float(oppCritical)*float(oppStab)*float(oppEff)+poison)
+                oppSleep = False
+            else:
+                oppDamage = 0 + poison
+                oppSleepTurn += 1
+        else:
+            oppDamage = int((((22*float(oppPower)*float(float(oppAttType)/float(oppDefType)))/50)+2)*float(oppCritical)*float(oppStab)*float(oppEff)+poison)
+    turn += 1
     return [damage,oppDamage]
 
 #HP Bar Updater
@@ -508,7 +623,6 @@ def hpBarUpdater(damage,player):
                 color = "red"
             canvas.create_line(115,515,115+hpBar,515,fill=color,width=5,tags="userLine")
         else:
-            print("helllooooo")
             loss = True
             
     if player.lower() == "opp":
@@ -528,9 +642,67 @@ def hpBarUpdater(damage,player):
                 oppColor = "red"
             canvas.create_line(110,125,110+oppHpBar,125,fill=oppColor,width=5,tags="oppLine")
         else:
-            print("heyyyy")
             win = True
-                    
+
+#Stat Modifier
+def statDecreaser(stage,stat,pokemon,statRow):
+    statsFile = open("CIS-1051\pokemon_stats.csv","r")
+    statsFile = statsFile.readlines()
+    monFile = open("CIS-1051\pokemon.csv","r")
+    monFile = monFile.readlines()
+    if float(stage) > 1:
+        stage = float(stage) - 0.5
+    if float(stage) == 1:
+        stage = 0.66
+    if float(stage) == 0.66:
+        stage = 0.5
+    if float(stage) == 0.5:
+        stage = 0.4
+    if float(stage) == 0.4:
+        stage = 0.33
+    if float(stage) == 0.33:
+        stage = 0.28
+    if float(stage) == 0.28:
+        stage = 0.25
+    for line in monFile:
+        line = line.split(",")
+        if line[1].capitalize() == pokemon:
+            id = line[0]
+            for row in statsFile:
+                row = row.split(",")
+                if row[0] == id:
+                    if row[1] == statRow:
+                        stat = float(row[2]) * stage
+    return stat
+def statIncreaser(stage,stat,pokemon,statRow):
+    statsFile = open("CIS-1051\pokemon_stats.csv","r")
+    statsFile = statsFile.readlines()
+    monFile = open("CIS-1051\pokemon.csv","r")
+    monFile = monFile.readlines()
+    if float(stage) >= 1:
+        stage = float(stage) + 0.5
+    if float(stage) == 0.66:
+        stage = 1
+    if float(stage) == 0.5:
+        stage = 0.66
+    if float(stage) == 0.4:
+        stage = 0.5
+    if float(stage) == 0.33:
+        stage = 0.4
+    if float(stage) == 0.28:
+        stage = 0.33
+    if float(stage) == 0.25:
+        stage = 0.28
+    for line in monFile:
+        line = line.split(",")
+        if line[1].capitalize() == pokemon:
+            id = line[0]
+            for row in statsFile:
+                row = row.split(",")
+                if row[0] == id:
+                    if row[1] == statRow:
+                        stat = float(row[2]) * stage
+    return stat
 #Win condition function
 def winCondition():
     global win,loss
