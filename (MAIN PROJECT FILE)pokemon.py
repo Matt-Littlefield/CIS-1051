@@ -37,15 +37,15 @@ def moveSelector(pokemon):
     moves = []
     move = ""
     pokeID = 0
-    pokeFile = open("CIS-1051\pokemon.csv", "r")
+    pokeFile = open("pokemon.csv", "r")
     pokeFile = pokeFile.readlines()[1:152]
     for line in pokeFile:
         line = line.split(",")
         if line[1].capitalize() == pokemon:
             pokeID = line[0]
-    moveFile = open("CIS-1051\pokemon_moves.csv", "r")
+    moveFile = open("pokemon_moves.csv", "r")
     moveFile = moveFile.readlines()
-    with open("CIS-1051\move_names.csv", "r",errors='replace') as nameFile:
+    with open("move_names.csv", "r",errors='replace') as nameFile:
         nameFile = nameFile.readlines()
     for line in moveFile:
         line = line.split(",")
@@ -104,13 +104,13 @@ canvas.pack(fill="both",expand=True)
 def homeScreen():
     global bg,title
     #Open and create background image
-    img = Image.open('CIS-1051/background.png')
+    img = Image.open('background.png')
     img = img.resize((960,600))
     bg = ImageTk.PhotoImage(img)
     canvas.create_image(0,0,image=bg, anchor=NW)
 
     #Open and create title image
-    title = Image.open("CIS-1051\pokemon.png")
+    title = Image.open("pokemon.png")
     title = title.resize((320,118))
     title = ImageTk.PhotoImage(title)
     canvas.create_image(320,100,anchor=NW,image=title)
@@ -127,14 +127,14 @@ def selectionScreen():
     canvas.configure(bg='gray')
     
     #big text box
-    box = Image.open('CIS-1051\dialog box.png')
+    box = Image.open('dialog box.png')
     box = box.resize((924,422))
     diaBox = ImageTk.PhotoImage(box)
     canvas.create_image(20,125,anchor=NW,image=diaBox)
 
     #Dropdowns
     pokeOptions = []
-    pokeFile = open("CIS-1051\pokemon.csv", "r")
+    pokeFile = open("pokemon.csv", "r")
     pokeFile = pokeFile.readlines()[1:152]
     for line in pokeFile:
         line = line.split(",")
@@ -163,32 +163,32 @@ def battleScreen():
     global battleBG,cpuPokeImg,userPokeImg,borderImg,oppBorderImg
     global move1,move2,move3,move4
     #Open and create background image
-    battleImg = Image.open('CIS-1051/battle background.png')
+    battleImg = Image.open('battle background.png')
     battleImg = battleImg.resize((960,600))
     battleBG = ImageTk.PhotoImage(battleImg)
     canvas.create_image(0,0,image=battleBG, anchor=NW)
 
     #Creating pokemon images
     pokeID = 0
-    pokeFile = open("CIS-1051\pokemon.csv","r")
+    pokeFile = open("pokemon.csv","r")
     pokeFile = pokeFile.readlines()
     for line in pokeFile:
         line = line.split(",")
         if line[1].capitalize() == oppPokemon:
             pokeID = line[0]
-    cpuPokeImg = PhotoImage(file="CIS-1051/ruby-sapphire/" + str(pokeID)+".png")
+    cpuPokeImg = PhotoImage(file="ruby-sapphire/" + str(pokeID)+".png")
     cpuPokeImg = cpuPokeImg.zoom(3,3)
     canvas.create_image(600,385,anchor=SW,image=cpuPokeImg)
     for line in pokeFile:
         line = line.split(",")
         if line[1].capitalize() == userPokemon:
             pokeID = line[0]
-    userPokeImg = PhotoImage(file="CIS-1051/ruby-sapphire/back/" + str(pokeID)+".png")
+    userPokeImg = PhotoImage(file="ruby-sapphire/back/" + str(pokeID)+".png")
     userPokeImg = userPokeImg.zoom(3,3)
     canvas.create_image(200,485,anchor=SW,image=userPokeImg)
 
     #Battle Menu
-    borderImg = PhotoImage(file="CIS-1051\moveBox.png")
+    borderImg = PhotoImage(file="moveBox.png")
     borderImg = borderImg.subsample(2,3)
     canvas.create_image(0,415,anchor=NW,image=borderImg,tags="borderImg")
 
@@ -204,7 +204,7 @@ def battleScreen():
     canvas.create_text(180,480,text=userPokemon,font=("Helvetica",25))
     canvas.create_line(115,515,475,515,fill="green",width=5,tags="userLine")
 
-    oppBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+    oppBorderImg = PhotoImage(file="moveBox.png")
     oppBorderImg = oppBorderImg.subsample(4,4)
     canvas.create_image(55,40,anchor=NW,image=oppBorderImg)
 
@@ -216,14 +216,14 @@ def winScreen(winner):
     global bg
     if winner:
         canvas.delete("all")
-        img = Image.open('CIS-1051/background.png')
+        img = Image.open('background.png')
         img = img.resize((960,600))
         bg = ImageTk.PhotoImage(img)
         canvas.create_image(0,0,image=bg, anchor=NW)
         canvas.create_text(480,240,text="Congratulations, You Win!",font=("Helvetica",40))
     else:
         canvas.delete("all")
-        img = Image.open('CIS-1051/background.png')
+        img = Image.open('background.png')
         img = img.resize((960,600))
         bg = ImageTk.PhotoImage(img)
         canvas.create_image(0,0,image=bg, anchor=NW)
@@ -245,7 +245,7 @@ def battleScreenUpdater(pokemon,move,player):
     if int(userSpeed) > int(oppSpeed):
         #User Move
         hpBarUpdater(damage,player)
-        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = PhotoImage(file="moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
         if sleep:
@@ -263,7 +263,7 @@ def battleScreenUpdater(pokemon,move,player):
     elif int(oppSpeed) > int(userSpeed):
         #Opp Move
         hpBarUpdater(oppDamage,"user")
-        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = PhotoImage(file="moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
         if oppSleep:
@@ -281,7 +281,7 @@ def battleScreenUpdater(pokemon,move,player):
     elif randomOrder == 0:
         #User Move
         hpBarUpdater(damage,player)
-        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = PhotoImage(file="moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
         if sleep:
@@ -299,7 +299,7 @@ def battleScreenUpdater(pokemon,move,player):
     elif randomOrder == 1:
         #Opp Move
         hpBarUpdater(oppDamage,"user")
-        textBorderImg = PhotoImage(file="CIS-1051\moveBox.png")
+        textBorderImg = PhotoImage(file="moveBox.png")
         textBorderImg = textBorderImg.subsample(5,5)
         canvas.create_image(500,50,anchor=NW,image=textBorderImg)
         if oppSleep:
@@ -343,15 +343,15 @@ def damageCalculator(pokemon,move,oppMove):
     oppMoveType = ""
     oppType = []
     oppTargetType = []
-    statsFile = open("CIS-1051\pokemon_stats.csv","r")
+    statsFile = open("pokemon_stats.csv","r")
     statsFile = statsFile.readlines()
-    monFile = open("CIS-1051\pokemon.csv","r")
+    monFile = open("pokemon.csv","r")
     monFile = monFile.readlines()
-    moveFile = open("CIS-1051\moves.csv","r")
+    moveFile = open("moves.csv","r")
     moveFile = moveFile.readlines()
-    typeFile = open("CIS-1051\pokemon_types.csv","r")
+    typeFile = open("pokemon_types.csv","r")
     typeFile = typeFile.readlines()
-    typeEFile = open("CIS-1051/type_efficacy.csv","r")
+    typeEFile = open("type_efficacy.csv","r")
     typeEFile = typeEFile.readlines()
     id = 0
     oppId = 0
@@ -646,9 +646,9 @@ def hpBarUpdater(damage,player):
 
 #Stat Modifier
 def statDecreaser(stage,stat,pokemon,statRow):
-    statsFile = open("CIS-1051\pokemon_stats.csv","r")
+    statsFile = open("pokemon_stats.csv","r")
     statsFile = statsFile.readlines()
-    monFile = open("CIS-1051\pokemon.csv","r")
+    monFile = open("pokemon.csv","r")
     monFile = monFile.readlines()
     if float(stage) > 1:
         stage = float(stage) - 0.5
@@ -675,9 +675,9 @@ def statDecreaser(stage,stat,pokemon,statRow):
                         stat = float(row[2]) * stage
     return stat
 def statIncreaser(stage,stat,pokemon,statRow):
-    statsFile = open("CIS-1051\pokemon_stats.csv","r")
+    statsFile = open("pokemon_stats.csv","r")
     statsFile = statsFile.readlines()
-    monFile = open("CIS-1051\pokemon.csv","r")
+    monFile = open("pokemon.csv","r")
     monFile = monFile.readlines()
     if float(stage) >= 1:
         stage = float(stage) + 0.5
